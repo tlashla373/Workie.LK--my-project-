@@ -34,6 +34,7 @@ import AdminReports from './pages/Admin/AdminReports';
 import AdminNotifications from './pages/Admin/AdminNotifications';
 import AdminSettings from './pages/Admin/AdminSettings';
 import NotificationsPage from './pages/Notifications/NotificationsPage';
+import AdminRegistration from './components/AdminRegistration';
 
 
 const App = () => {
@@ -163,6 +164,10 @@ const App = () => {
     {
       path: '/clientsetup',
       element: <ClientSetup/>,
+    },
+    {
+      path: '/admin-register',
+      element: <AdminRegistration/>,
     },
     {
       path: '/workerprofile',

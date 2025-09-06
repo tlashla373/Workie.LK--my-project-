@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useDarkMode } from '../../contexts/DarkModeContext';
 import ProfileHeader from '../../components/ProfileHeader';
 import NavigationTabs from '../../components/NavigationTab';
@@ -10,11 +11,16 @@ import profileService from '../../services/profileService';
 
 const ClientProfile = () => {
   const { isDarkMode } = useDarkMode();
+  const { userId } = useParams(); // Get userId from URL params
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('about');
   const [isFollowing, setIsFollowing] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [retryCount, setRetryCount] = useState(0);
+  const [isOwnProfile, setIsOwnProfile] = useState(false); // Track if viewing own profile
+  const [currentUserId, setCurrentUserId] = useState(null); // Current logged-in user ID
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const maxRetries = 3;
   const [profileData, setProfileData] = useState({
     name: "",
@@ -35,6 +41,33 @@ const ClientProfile = () => {
     portfolio: []
   });
 
+  // Get current user ID and determine if viewing own profile
+  useEffect(() => {
+    const getCurrentUser = () => {
+      try {
+        const userData = localStorage.getItem('auth_user');
+        if (userData) {
+          const user = JSON.parse(userData);
+          const loggedInUserId = user.id || user._id;
+          setCurrentUserId(loggedInUserId);
+          
+          // If no userId in URL params, viewing own profile
+          if (!userId) {
+            setIsOwnProfile(true);
+          } else {
+            // If userId in URL matches current user, viewing own profile
+            setIsOwnProfile(userId === loggedInUserId);
+          }
+        }
+      } catch (error) {
+        console.error('Error getting current user:', error);
+        setIsOwnProfile(false);
+      }
+    };
+
+    getCurrentUser();
+  }, [userId]);
+
   // Fetch user profile data on component mount
   useEffect(() => {
     const fetchProfileData = async () => {
@@ -45,8 +78,18 @@ const ClientProfile = () => {
         console.log('ClientProfile: Starting profile fetch...');
         console.log('ClientProfile: Auth token exists:', !!localStorage.getItem('auth_token'));
         console.log('ClientProfile: User data exists:', !!localStorage.getItem('auth_user'));
+        console.log('ClientProfile: Is own profile:', isOwnProfile);
+        console.log('ClientProfile: Target userId:', userId);
         
-        const response = await profileService.getCurrentUserProfile();
+        let response;
+        
+        // Fetch own profile or another user's profile
+        if (isOwnProfile || !userId) {
+          response = await profileService.getCurrentUserProfile();
+        } else {
+          response = await profileService.getUserProfile(userId);
+        }
+        
         console.log('ClientProfile: Profile service response:', response);
         
         if (response.success) {
@@ -135,7 +178,7 @@ const ClientProfile = () => {
     };
 
     fetchProfileData();
-  }, []);
+  }, [userId, isOwnProfile, currentUserId]); // Re-fetch when userId or profile ownership changes
 
   // Retry function
   const retryFetchProfile = () => {
@@ -146,7 +189,13 @@ const ClientProfile = () => {
       
       setTimeout(async () => {
         try {
-          const response = await profileService.getCurrentUserProfile();
+          let response;
+          if (isOwnProfile || !userId) {
+            response = await profileService.getCurrentUserProfile();
+          } else {
+            response = await profileService.getUserProfile(userId);
+          }
+          
           if (response.success) {
             const { user, profile } = response.data;
             if (!user) throw new Error('User data not found');
@@ -198,6 +247,12 @@ const ClientProfile = () => {
   };
 
   const handleCoverPhotoUpdate = async (newCoverImage) => {
+    // Only allow editing own profile
+    if (!isOwnProfile) {
+      console.log('Cannot edit other user\'s profile');
+      return;
+    }
+
     setProfileData({...profileData, coverImage: newCoverImage});
     
     // Optionally refetch the complete profile data to ensure consistency
@@ -218,6 +273,12 @@ const ClientProfile = () => {
   };
 
   const handleProfilePhotoUpdate = async (newProfileImage) => {
+    // Only allow editing own profile
+    if (!isOwnProfile) {
+      console.log('Cannot edit other user\'s profile');
+      return;
+    }
+
     setProfileData({...profileData, profileImage: newProfileImage});
     
     // Optionally refetch the complete profile data to ensure consistency
@@ -240,6 +301,10 @@ const ClientProfile = () => {
   const handleFriendConnect = (friendId) => {
     console.log(`Connected with friend ID: ${friendId}`);
     // You can add additional logic here like API calls
+  };
+
+  const handleEditProfile = () => {
+    setIsEditModalOpen(true);
   };
 
   const renderTabContent = () => {
@@ -284,15 +349,31 @@ const ClientProfile = () => {
 
     switch(activeTab) {
       case 'about':
-        return <ProfileAbout profileData={profileData} isDarkMode={isDarkMode} />;
+        return (
+          <ProfileAbout 
+            profileData={profileData} 
+            isDarkMode={isDarkMode} 
+            isOwnProfile={isOwnProfile}
+            isEditModalOpen={isEditModalOpen}
+            setIsEditModalOpen={setIsEditModalOpen}
+          />
+        );
       case 'photos':
-        return <ProfilePhotos photos={profileData.portfolio} isDarkMode={isDarkMode} />;
+        return <ProfilePhotos photos={profileData.portfolio} isDarkMode={isDarkMode} isOwnProfile={isOwnProfile} />;
       case 'timeline':
-        return <ProfileTimeline isDarkMode={isDarkMode} />;
+        return <ProfileTimeline isDarkMode={isDarkMode} isOwnProfile={isOwnProfile} />;
       case 'friends':
-        return <ProfileFriends isDarkMode={isDarkMode} onConnect={handleFriendConnect} />;
+        return <ProfileFriends isDarkMode={isDarkMode} onConnect={handleFriendConnect} isOwnProfile={isOwnProfile} />;
       default:
-        return <ProfileAbout profileData={profileData} isDarkMode={isDarkMode} />;
+        return (
+          <ProfileAbout 
+            profileData={profileData} 
+            isDarkMode={isDarkMode} 
+            isOwnProfile={isOwnProfile}
+            isEditModalOpen={isEditModalOpen}
+            setIsEditModalOpen={setIsEditModalOpen}
+          />
+        );
     }
   };
 
@@ -304,6 +385,7 @@ const ClientProfile = () => {
           onCoverPhotoUpdate={handleCoverPhotoUpdate}
           onProfilePhotoUpdate={handleProfilePhotoUpdate}
           isDarkMode={isDarkMode}
+          isOwnProfile={isOwnProfile}
         />
         
         <NavigationTabs 
@@ -312,6 +394,8 @@ const ClientProfile = () => {
           isFollowing={isFollowing}
           setIsFollowing={setIsFollowing}
           isDarkMode={isDarkMode}
+          isOwnProfile={isOwnProfile}
+          onEditProfile={handleEditProfile}
         />
         
         <div className="p-4 sm:p-6">
