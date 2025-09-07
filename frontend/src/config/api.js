@@ -78,6 +78,15 @@ export const API_ENDPOINTS = {
     CLEAR_ALL: `${API_BASE_URL}/notifications/clear-all`,
   },
 
+  // Connections
+  CONNECTIONS: {
+    MY_CONNECTIONS: `${API_BASE_URL}/connections/my-connections`,
+    STATS: `${API_BASE_URL}/connections/stats`,
+    SEND_REQUEST: `${API_BASE_URL}/connections/send-request`,
+    RESPOND: (id) => `${API_BASE_URL}/connections/respond/${id}`,
+    REMOVE: (id) => `${API_BASE_URL}/connections/${id}`,
+  },
+
   // Admin
   ADMIN: {
     DASHBOARD: `${API_BASE_URL}/admin/dashboard`,

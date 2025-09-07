@@ -213,7 +213,7 @@ const FileUpload = ({
     <div className={`w-full ${className}`}>
       {/* Upload Area */}
       <div
-        className={`relative border-2 border-dashed rounded-lg p-6 transition-all duration-200 ${
+        className={`relative border-2  w-45 rounded-lg p-2 transition-all duration-200 ${
           dragActive
             ? 'border-blue-500 bg-blue-50'
             : disabled
@@ -252,13 +252,13 @@ const FileUpload = ({
             </div>
           ) : uploadType === 'profile' ? (
             <>
-              <Camera className="w-12 h-12 text-gray-400 mb-4" />
+              
               <p className="text-sm font-medium text-gray-700 mb-1">Upload Profile Picture</p>
               <p className="text-xs text-gray-500">{uploadText}</p>
             </>
           ) : (
             <>
-              <Upload className="w-12 h-12 text-gray-400 mb-4" />
+              
               <p className="text-sm font-medium text-gray-700 mb-1">{uploadText}</p>
               <p className="text-xs text-gray-500">
                 {allowVideo ? 'Images and videos' : 'Images'} up to {maxSizeInMB}MB

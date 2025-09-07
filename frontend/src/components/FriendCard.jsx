@@ -1,8 +1,8 @@
 import React from 'react';
-import { Mail, Phone } from 'lucide-react';
+import { Mail, Phone, UserPlus, UserCheck } from 'lucide-react';
 import { useDarkMode } from '../contexts/DarkModeContext';
 
-const FriendCard = ({ friend, onEmailClick, onCallClick }) => {
+const FriendCard = ({ friend, onEmailClick, onCallClick, onConnectClick, isConnected, showConnectButton = false }) => {
   const { isDarkMode } = useDarkMode();
 
   const handleEmailClick = () => {
@@ -18,6 +18,14 @@ const FriendCard = ({ friend, onEmailClick, onCallClick }) => {
       onCallClick(friend);
     } else {
       console.log(`Calling ${friend.name}`);
+    }
+  };
+
+  const handleConnectClick = () => {
+    if (onConnectClick) {
+      onConnectClick(friend);
+    } else {
+      console.log(`Connecting with ${friend.name}`);
     }
   };
 
@@ -48,22 +56,55 @@ const FriendCard = ({ friend, onEmailClick, onCallClick }) => {
       </div>
 
       {/* Action Buttons */}
-      <div className="flex space-x-2 sm:space-x-3">
-        <button
-          onClick={handleEmailClick}
-          className={`flex-1 flex items-center justify-center space-x-1 sm:space-x-2 py-2 sm:py-2.5 px-3 sm:px-4 rounded-lg border ${isDarkMode ? 'border-gray-600 text-gray-300 hover:bg-gray-700 hover:border-gray-500' : 'border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400'} transition-all duration-200 group/btn`}
-        >
-          <Mail className="w-3 h-3 sm:w-4 sm:h-4 group-hover/btn:scale-110 transition-transform duration-200" />
-          <span className="text-xs sm:text-sm font-medium">Email</span>
-        </button>
+      <div className={`flex ${showConnectButton ? 'space-x-2' : 'space-x-2 sm:space-x-3'}`}>
+        {showConnectButton ? (
+          <>
+            <button
+              onClick={handleConnectClick}
+              className={`flex-1 flex items-center justify-center space-x-1 sm:space-x-2 py-2 sm:py-2.5 px-3 sm:px-4 rounded-lg transition-all duration-200 group/btn ${isConnected 
+                ? `border ${isDarkMode ? 'border-green-600 text-green-400 hover:bg-green-900/20' : 'border-green-500 text-green-600 hover:bg-green-50'}` 
+                : `bg-blue-500 text-white hover:bg-blue-600`
+              }`}
+            >
+              {isConnected ? (
+                <>
+                  <UserCheck className="w-3 h-3 sm:w-4 sm:h-4 group-hover/btn:scale-110 transition-transform duration-200" />
+                  <span className="text-xs sm:text-sm font-medium">Connected</span>
+                </>
+              ) : (
+                <>
+                  <UserPlus className="w-3 h-3 sm:w-4 sm:h-4 group-hover/btn:scale-110 transition-transform duration-200" />
+                  <span className="text-xs sm:text-sm font-medium">Connect</span>
+                </>
+              )}
+            </button>
+            <button
+              onClick={handleEmailClick}
+              className={`flex-1 flex items-center justify-center space-x-1 sm:space-x-2 py-2 sm:py-2.5 px-3 sm:px-4 rounded-lg border ${isDarkMode ? 'border-gray-600 text-gray-300 hover:bg-gray-700 hover:border-gray-500' : 'border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400'} transition-all duration-200 group/btn`}
+            >
+              <Mail className="w-3 h-3 sm:w-4 sm:h-4 group-hover/btn:scale-110 transition-transform duration-200" />
+              <span className="text-xs sm:text-sm font-medium">Email</span>
+            </button>
+          </>
+        ) : (
+          <>
+            <button
+              onClick={handleEmailClick}
+              className={`flex-1 flex items-center justify-center space-x-1 sm:space-x-2 py-2 sm:py-2.5 px-3 sm:px-4 rounded-lg border ${isDarkMode ? 'border-gray-600 text-gray-300 hover:bg-gray-700 hover:border-gray-500' : 'border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400'} transition-all duration-200 group/btn`}
+            >
+              <Mail className="w-3 h-3 sm:w-4 sm:h-4 group-hover/btn:scale-110 transition-transform duration-200" />
+              <span className="text-xs sm:text-sm font-medium">Email</span>
+            </button>
 
-        <button
-          onClick={handleCallClick}
-          className={`flex-1 flex items-center justify-center space-x-1 sm:space-x-2 py-2 sm:py-2.5 px-3 sm:px-4 rounded-lg border ${isDarkMode ? 'border-gray-600 text-gray-300 hover:bg-gray-700 hover:border-gray-500' : 'border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400'} transition-all duration-200 group/btn`}
-        >
-          <Phone className="w-3 h-3 sm:w-4 sm:h-4 group-hover/btn:scale-110 transition-transform duration-200" />
-          <span className="text-xs sm:text-sm font-medium">Call</span>
-        </button>
+            <button
+              onClick={handleCallClick}
+              className={`flex-1 flex items-center justify-center space-x-1 sm:space-x-2 py-2 sm:py-2.5 px-3 sm:px-4 rounded-lg border ${isDarkMode ? 'border-gray-600 text-gray-300 hover:bg-gray-700 hover:border-gray-500' : 'border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400'} transition-all duration-200 group/btn`}
+            >
+              <Phone className="w-3 h-3 sm:w-4 sm:h-4 group-hover/btn:scale-110 transition-transform duration-200" />
+              <span className="text-xs sm:text-sm font-medium">Call</span>
+            </button>
+          </>
+        )}
       </div>
     </div>
   );

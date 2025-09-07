@@ -11,11 +11,13 @@ import WorkerProfile from './pages/Profile/WorkerProfile';
 import { DarkModeProvider } from './contexts/DarkModeContext';
 import Video from './pages/Video/Video';
 import ClientProfile from './pages/Profile/ClientProfile';
+import EditProfile from './pages/EditProfile/EditProfile';
 import LoginPage from './pages/Authentication/LoginPage';
 import SignUpPage from './pages/Authentication/SignUpPage';
 import EmailVerification from './pages/Authentication/EmailVerification';
 import RoleSelection from './pages/Authentication/RoleSelection';
 import Friends from './pages/Friend/Friends';
+import DatabaseTester from './components/DatabaseTester';
 import WorkerVerification from './pages/Authentication/WorkerVerification';
 import ClientSetup from './pages/Authentication/ClientSetup';
 import AddPostPage from './pages/AddPostPage/AddPostPage';
@@ -58,8 +60,16 @@ const App = () => {
           element: <Friends />,
         },
         {
+          path: 'test-db',
+          element: <DatabaseTester />,
+        },
+        {
           path: 'clientprofile',
           element: <ClientProfile />,
+        },
+        {
+          path: 'edit-profile',
+          element: <EditProfile />,
         },
         {
           path: 'post-job',

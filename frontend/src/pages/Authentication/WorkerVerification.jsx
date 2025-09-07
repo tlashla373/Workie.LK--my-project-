@@ -604,6 +604,41 @@ const WorkerVerification = () => {
           <div className="space-y-4 sm:space-y-6">
             <h2 className="text-xl sm:text-2xl font-semibold mb-3 sm:mb-4">Profile Photo</h2>
             <div className="max-w-md mx-auto">
+              {/* Custom Profile Photo Preview */}
+              <div className="flex flex-col items-center space-y-4 mb-6">
+                {/* Circular Preview */}
+                <div className={`relative w-32 h-32 rounded-full border-4 ${
+                  isDarkMode ? 'border-gray-600 bg-gray-800' : 'border-gray-300 bg-gray-100'
+                } overflow-hidden group`}>
+                  {profileImagePreview ? (
+                    <>
+                      <img
+                        src={profileImagePreview}
+                        alt="Profile preview"
+                        className="w-full h-full object-cover"
+                      />
+                      {/* Hover overlay */}
+                      <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                        <Camera className="w-6 h-6 text-white" />
+                      </div>
+                    </>
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center">
+                      <Camera className={`w-8 h-8 ${isDarkMode ? 'text-gray-500' : 'text-gray-400'}`} />
+                    </div>
+                  )}
+                </div>
+
+                {/* Photo Info */}
+                {profileImagePreview && (
+                  <div className="text-center">
+                    <p className="text-sm font-medium text-green-600">Profile photo selected</p>
+                    <p className="text-xs text-gray-500">{workerData.profilePhoto?.name}</p>
+                  </div>
+                )}
+              </div>
+
+              {/* File Upload Component */}
               <FileUpload
                 uploadType="profile"
                 maxFiles={1}
@@ -624,8 +659,9 @@ const WorkerVerification = () => {
                     profilePhotoUrl: null
                   }));
                 }}
-                uploadText="Upload your profile photo"
-                showPreview={true}
+                uploadText={workerData.profilePhoto ? 'Change Photo' : 'Upload Photo'}
+                showPreview={false}
+                className="w-full"
               />
               
               <div className="text-center mt-4">
@@ -650,7 +686,44 @@ const WorkerVerification = () => {
                 
                 {/* ID Front Photo */}
                 <div className="mb-6">
-                  <label className="block text-sm font-medium mb-2">ID Front Photo</label>
+                  <label className="block text-sm font-medium mb-3">ID Front Photo</label>
+                  
+                  {/* Custom ID Front Preview */}
+                  <div className="flex flex-col items-center space-y-3 mb-4">
+                    <div className={`relative w-64 h-40 rounded-lg border-2 border-dashed ${
+                      isDarkMode ? 'border-gray-600 bg-gray-800' : 'border-gray-300 bg-gray-50'
+                    } overflow-hidden group`}>
+                      {idFrontImagePreview ? (
+                        <>
+                          <img
+                            src={idFrontImagePreview}
+                            alt="ID Front preview"
+                            className="w-full h-full object-cover rounded-lg"
+                          />
+                          {/* Hover overlay */}
+                          <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                            <Upload className="w-6 h-6 text-white" />
+                          </div>
+                        </>
+                      ) : (
+                        <div className="w-full h-full flex flex-col items-center justify-center">
+                          <CreditCard className={`w-8 h-8 mb-2 ${isDarkMode ? 'text-gray-500' : 'text-gray-400'}`} />
+                          <span className={`text-sm ${isDarkMode ? 'text-gray-500' : 'text-gray-400'}`}>
+                            Front of ID
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                    
+                    {/* Photo Info */}
+                    {idFrontImagePreview && (
+                      <div className="text-center">
+                        <p className="text-sm font-medium text-green-600">ID front photo selected</p>
+                        <p className="text-xs text-gray-500">{workerData.idPhotoFront?.name}</p>
+                      </div>
+                    )}
+                  </div>
+
                   <FileUpload
                     uploadType="verification"
                     maxFiles={1}
@@ -671,15 +744,52 @@ const WorkerVerification = () => {
                         idPhotoFrontUrl: null
                       }));
                     }}
-                    uploadText="Upload front of ID"
-                    showPreview={true}
+                    uploadText={workerData.idPhotoFront ? 'Change Front ID' : 'Upload Front ID'}
+                    showPreview={false}
                     className="mb-4"
                   />
                 </div>
 
                 {/* ID Back Photo */}
                 <div className="mb-6">
-                  <label className="block text-sm font-medium mb-2">ID Back Photo</label>
+                  <label className="block text-sm font-medium mb-3">ID Back Photo</label>
+                  
+                  {/* Custom ID Back Preview */}
+                  <div className="flex flex-col items-center space-y-3 mb-4">
+                    <div className={`relative w-64 h-40 rounded-lg border-2 border-dashed ${
+                      isDarkMode ? 'border-gray-600 bg-gray-800' : 'border-gray-300 bg-gray-50'
+                    } overflow-hidden group`}>
+                      {idBackImagePreview ? (
+                        <>
+                          <img
+                            src={idBackImagePreview}
+                            alt="ID Back preview"
+                            className="w-full h-full object-cover rounded-lg"
+                          />
+                          {/* Hover overlay */}
+                          <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                            <Upload className="w-6 h-6 text-white" />
+                          </div>
+                        </>
+                      ) : (
+                        <div className="w-full h-full flex flex-col items-center justify-center">
+                          <CreditCard className={`w-8 h-8 mb-2 ${isDarkMode ? 'text-gray-500' : 'text-gray-400'}`} />
+                          <span className={`text-sm ${isDarkMode ? 'text-gray-500' : 'text-gray-400'}`}>
+                            Back of ID
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                    
+                    {/* Photo Info */}
+                    {idBackImagePreview && (
+                      <div className="text-center">
+                        <p className="text-sm font-medium text-green-600">ID back photo selected</p>
+                        <p className="text-xs text-gray-500">{workerData.idPhotoBack?.name}</p>
+                      </div>
+                    )}
+                  </div>
+
                   <FileUpload
                     uploadType="verification"
                     maxFiles={1}
@@ -700,8 +810,8 @@ const WorkerVerification = () => {
                         idPhotoBackUrl: null
                       }));
                     }}
-                    uploadText="Upload back of ID"
-                    showPreview={true}
+                    uploadText={workerData.idPhotoBack ? 'Change Back ID' : 'Upload Back ID'}
+                    showPreview={false}
                   />
                 </div>
               </div>

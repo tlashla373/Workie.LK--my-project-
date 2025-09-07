@@ -12,9 +12,9 @@ const TestConnection = () => {
     try {
       // Test basic connection
       const response = await apiService.get('/auth/test', { includeAuth: false });
-      setResult(`✅ Backend Connection Success: ${JSON.stringify(response)}`);
+      setResult(`Backend Connection Success: ${JSON.stringify(response)}`);
     } catch (error) {
-      setResult(`❌ Backend Connection Failed: ${error.message}`);
+      setResult(`Backend Connection Failed: ${error.message}`);
       console.error('Connection test error:', error);
     } finally {
       setLoading(false);
@@ -35,9 +35,9 @@ const TestConnection = () => {
       };
       
       const response = await apiService.post('/auth/register', testData, { includeAuth: false });
-      setResult(`✅ Registration Success: ${JSON.stringify(response, null, 2)}`);
+      setResult(`Registration Success: ${JSON.stringify(response, null, 2)}`);
     } catch (error) {
-      setResult(`❌ Registration Failed: ${error.message}`);
+      setResult(`Registration Failed: ${error.message}`);
       console.error('Registration test error:', error);
     } finally {
       setLoading(false);
