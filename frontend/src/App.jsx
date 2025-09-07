@@ -17,7 +17,6 @@ import SignUpPage from './pages/Authentication/SignUpPage';
 import EmailVerification from './pages/Authentication/EmailVerification';
 import RoleSelection from './pages/Authentication/RoleSelection';
 import Friends from './pages/Friend/Friends';
-import DatabaseTester from './components/DatabaseTester';
 import WorkerVerification from './pages/Authentication/WorkerVerification';
 import ClientSetup from './pages/Authentication/ClientSetup';
 import AddPostPage from './pages/AddPostPage/AddPostPage';
@@ -58,10 +57,6 @@ const App = () => {
         {
           path: 'friends',
           element: <Friends />,
-        },
-        {
-          path: 'test-db',
-          element: <DatabaseTester />,
         },
         {
           path: 'clientprofile',
