@@ -175,6 +175,9 @@ const profileSchema = new mongoose.Schema({
   workerCategories: [{
     type: String
   }],
+  dateOfBirth: {
+    type: Date
+  },
   age: {
     type: Number,
     min: 18,
@@ -183,6 +186,7 @@ const profileSchema = new mongoose.Schema({
   country: String,
   streetAddress: String,
   city: String,
+  province: String,
   postalCode: String,
   workLocation: String,
   preferredWorkAreas: String,

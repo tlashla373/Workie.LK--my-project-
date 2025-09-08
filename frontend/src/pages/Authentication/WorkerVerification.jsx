@@ -40,10 +40,12 @@ const WorkerVerification = () => {
     skills: '',
     experience: '',
     bio: '',
+    dateOfBirth: '',
     age: '',
     country: '',
     streetAddress: '',
     city: '',
+    province: '',
     postalCode: '',
     // Existing fields
     location: '',
@@ -63,6 +65,32 @@ const WorkerVerification = () => {
   const [isVerifyingEmail, setIsVerifyingEmail] = useState(false);
   const [isVerifyingPhone, setIsVerifyingPhone] = useState(false);
 
+  // Function to calculate age from date of birth
+  const calculateAge = (dateOfBirth) => {
+    if (!dateOfBirth) return '';
+    
+    const today = new Date();
+    const birthDate = new Date(dateOfBirth);
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+    
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+    
+    return age.toString();
+  };
+
+  // Handle date of birth change
+  const handleDateOfBirthChange = (date) => {
+    const age = calculateAge(date);
+    setWorkerData(prev => ({
+      ...prev,
+      dateOfBirth: date,
+      age: age
+    }));
+  };
+
   // Function to submit worker verification data to backend
   const submitWorkerVerificationData = async () => {
     try {
@@ -78,10 +106,12 @@ const WorkerVerification = () => {
         skills: workerData.skills,
         experience: workerData.experience,
         bio: workerData.bio,
+        dateOfBirth: workerData.dateOfBirth,
         age: workerData.age,
         country: workerData.country,
         streetAddress: workerData.streetAddress,
         city: workerData.city,
+        province: workerData.province,
         postalCode: workerData.postalCode,
         location: workerData.location,
         address: workerData.address,
@@ -119,8 +149,20 @@ const WorkerVerification = () => {
 
   // Available worker categories
   const workerCategories = [
-    'Plumber', 'Electrician', 'Carpenter', 'Mason', 'Painter', 'Welder',
-    'HVAC Technician', 'Roofer', 'Landscaper', 'Cleaner', 'Mechanic', 'Driver'
+    'Plumber', 'Carpenter', 'Mason', 'Painter', 'Welder'
+  ];
+
+  // Sri Lankan provinces
+  const sriLankanProvinces = [
+    'Western Province',
+    'Central Province', 
+    'Southern Province',
+    'Northern Province',
+    'Eastern Province',
+    'North Western Province',
+    'North Central Province',
+    'Uva Province',
+    'Sabaragamuwa Province'
   ];
 
   const steps = [
@@ -251,10 +293,11 @@ const WorkerVerification = () => {
       case 2:
         return workerData.bio.trim() !== '';
       case 3:
-        return workerData.age.trim() !== '' && 
+        return workerData.dateOfBirth.trim() !== '' && 
                workerData.country.trim() !== '' && 
                workerData.streetAddress.trim() !== '' && 
                workerData.city.trim() !== '' && 
+               workerData.province.trim() !== '' &&
                workerData.postalCode.trim() !== '';
       case 4:
         return workerData.location.trim() !== '' && workerData.address.trim() !== '';
@@ -388,13 +431,13 @@ const WorkerVerification = () => {
                       className={`p-2 sm:p-3 rounded-lg border text-sm font-medium transition-all ${
                         workerData.categories.includes(category)
                           ? 'bg-blue-500 text-white border-blue-500'
-                          : workerData.categories.length >= 2
+                          : workerData.categories.length === 2
                           ? 'bg-gray-200 text-gray-400 border-gray-200 cursor-not-allowed'
                           : isDarkMode
                           ? 'border-gray-600 hover:border-blue-500 hover:bg-gray-800'
                           : 'border-gray-300 hover:border-blue-500 hover:bg-blue-50'
                       }`}
-                      disabled={!workerData.categories.includes(category) && workerData.categories.length >= 2}
+                      disabled={!workerData.categories.includes(category) && workerData.categories.length === 2}
                     >
                       {category}
                     </button>
@@ -472,18 +515,22 @@ const WorkerVerification = () => {
             <h2 className="text-xl sm:text-2xl font-semibold mb-3 sm:mb-4">Personal Details</h2>
             <div className="space-y-3 sm:space-y-4">
               <div>
-                <label className="block text-sm font-medium mb-1">Age *</label>
+                <label className="block text-sm font-medium mb-1">Date of Birth *</label>
                 <input
-                  type="number"
-                  placeholder="Enter your age"
-                  value={workerData.age}
-                  onChange={(e) => setWorkerData({ ...workerData, age: e.target.value })}
-                  min="18"
-                  max="70"
+                  type="date"
+                  value={workerData.dateOfBirth}
+                  onChange={(e) => handleDateOfBirthChange(e.target.value)}
+                  max={new Date(new Date().setFullYear(new Date().getFullYear() - 18)).toISOString().split('T')[0]}
+                  min={new Date(new Date().setFullYear(new Date().getFullYear() - 100)).toISOString().split('T')[0]}
                   className={`w-full border rounded-lg px-3 py-2 text-sm sm:text-base bg-transparent focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors ${
                     isDarkMode ? 'border-gray-600' : 'border-gray-300'
                   }`}
                 />
+                {workerData.age && (
+                  <p className="text-xs text-gray-500 mt-1">
+                    Age: {workerData.age} years old
+                  </p>
+                )}
               </div>
 
               <div>
@@ -524,6 +571,32 @@ const WorkerVerification = () => {
                       isDarkMode ? 'border-gray-600' : 'border-gray-300'
                     }`}
                   />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                <div>
+                  <label className="block text-sm font-medium mb-1">Province *</label>
+                  <select
+                    value={workerData.province}
+                    onChange={(e) => setWorkerData({ ...workerData, province: e.target.value })}
+                    className={`w-full border rounded-lg px-3 py-2 text-sm sm:text-base bg-transparent focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors ${
+                      isDarkMode ? 'border-gray-600 bg-gray-800 text-white' : 'border-gray-300 bg-white text-gray-900'
+                    }`}
+                  >
+                    <option value="" disabled className={isDarkMode ? 'bg-gray-800 text-gray-400' : 'bg-white text-gray-500'}>
+                      Select your province
+                    </option>
+                    {sriLankanProvinces.map((province) => (
+                      <option 
+                        key={province} 
+                        value={province}
+                        className={isDarkMode ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'}
+                      >
+                        {province}
+                      </option>
+                    ))}
+                  </select>
                 </div>
 
                 <div>

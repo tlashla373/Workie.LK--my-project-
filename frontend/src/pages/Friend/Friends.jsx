@@ -121,8 +121,8 @@ const Friends = () => {
               </h1>
               <p className={`text-sm sm:text-base ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
                 {showConnections 
-                  ? `Connect with skilled professionals in your network${stats ? ` (${stats.totalConnections} connections)` : ''}`
-                  : 'Find and connect with skilled professionals'
+                  ? `Connect with people in your network${stats ? ` (${stats.totalConnections} connections)` : ''}`
+                  : 'Find and connect with skilled workers and clients'
                 }
               </p>
             </div>
