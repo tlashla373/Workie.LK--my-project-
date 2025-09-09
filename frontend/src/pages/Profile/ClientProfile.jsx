@@ -265,8 +265,8 @@ const ClientProfile = () => {
               website: profile?.socialLinks?.website || "",
               
               // Images
-              coverImage: user.coverPhoto || "https://images.pexels.com/photos/3184339/pexels-photo-3184339.jpeg?auto=compress&cs=tinysrgb&w=800&h=300&fit=crop",
-              profileImage: user.profilePicture || "https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=200&h=200&fit=crop",
+              coverImage: user.coverPhoto || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQEBNC5QQQqyu8DeKNhuhTzHJhEPOflFO5XUQ&s",
+              profileImage: user.profilePicture || "https://static.vecteezy.com/system/resources/previews/009/292/244/non_2x/default-avatar-icon-of-social-media-user-vector.jpg",
               
               // Stats
               followers: 0,

@@ -35,7 +35,7 @@ const AuthChecker = () => {
 
   const handleLogin = () => {
     // Navigate to login page
-    window.location.href = '/login';
+    window.location.href = '/loginpage';
   };
 
   if (!authState.isLoggedIn) {

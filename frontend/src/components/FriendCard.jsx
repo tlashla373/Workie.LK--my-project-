@@ -72,7 +72,7 @@ const FriendCard = ({ friend, onEmailClick, onCallClick, onConnectClick, onViewP
               className={`flex-1 flex items-center justify-center space-x-1 sm:space-x-2 py-2 sm:py-2.5 px-3 sm:px-4 rounded-lg transition-all duration-200 group/btn bg-blue-500 text-white hover:bg-blue-600`}
             >
               <User className="w-3 h-3 sm:w-4 sm:h-4 group-hover/btn:scale-110 transition-transform duration-200" />
-              <span className="text-xs sm:text-sm font-medium">View Profile</span>
+              <span className="text-xs sm:text-sm font-medium">View</span>
             </button>
             <button
               onClick={handleEmailClick}
