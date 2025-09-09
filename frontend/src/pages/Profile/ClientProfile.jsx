@@ -93,7 +93,25 @@ const ClientProfile = () => {
         console.log('ClientProfile: Profile service response:', response);
         
         if (response.success) {
-          const { user, profile } = response.data;
+          // Handle different response structures from different endpoints
+          let user, profile;
+          
+          if (isOwnProfile || !userId) {
+            // getCurrentUserProfile response structure from /auth/me
+            user = response.data.user;
+            profile = response.data.profile;
+          } else {
+            // getUserProfile response structure from /profiles/:userId
+            if (response.data.user && response.data.profile) {
+              // New structure after backend update
+              user = response.data.user;
+              profile = response.data.profile;
+            } else {
+              // Legacy structure where response.data is the profile with populated user
+              profile = response.data;
+              user = profile.user;
+            }
+          }
           
           console.log('Client Profile - User data:', user);
           console.log('Client Profile - Profile data:', profile);
@@ -105,20 +123,28 @@ const ClientProfile = () => {
           
           // Map backend data to frontend structure (Client-specific)
           const mappedData = {
+            // Basic user information
             name: `${user.firstName || ''} ${user.lastName || ''}`.trim() || 'User',
-            profession: user.userType === 'client' ? 'Client' : (profile?.preferences?.jobTypes?.join(', ') || "Professional"),
+            profession: user.userType === 'client' ? 'Client' : (profile?.preferences?.jobTypes?.join(', ') || profile?.skills?.map(skill => skill.name)?.join(', ') || "Professional"),
             location: user.address ? `${user.address.city || ''}, ${user.address.country || ''}`.replace(', ,', ',').trim().replace(/^,|,$/g, '') : "",
             phone: user.phone || "",
+            email: user.email || "",
             website: profile?.socialLinks?.website || "",
+            
+            // Images
             coverImage: user.coverPhoto || "https://images.pexels.com/photos/3184339/pexels-photo-3184339.jpeg?auto=compress&cs=tinysrgb&w=800&h=300&fit=crop",
             profileImage: user.profilePicture || "https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=200&h=200&fit=crop",
+            
+            // Stats
             followers: 0, // Not implemented yet
             following: 0, // Not implemented yet
             posts: 0, // Not implemented yet
             rating: profile?.ratings?.average || 0,
             completedJobs: user.userType === 'client' ? (profile?.completedJobs || 0) : 0, // For clients, this could be "Posted Jobs"
+            
+            // Profile details
             bio: profile?.bio || "",
-            skills: profile?.skills?.map(skill => skill.name) || [],
+            skills: profile?.skills?.map(skill => skill.name || skill) || [],
             experience: profile?.experience?.map(exp => ({
               title: exp.title,
               company: exp.company || "",
@@ -133,7 +159,17 @@ const ClientProfile = () => {
                 return item.media[0].url;
               }
               return item.images?.[0] || "";
-            }).filter(img => img) || []
+            }).filter(img => img) || [],
+            
+            // Include raw user and profile data for components that need it
+            user: user,
+            profile: profile,
+            
+            // Additional metadata
+            userType: user.userType,
+            isVerified: user.isVerified || false,
+            joinDate: user.createdAt,
+            availability: profile?.availability?.status || 'available'
           };
           
           console.log('Client Profile - Mapped data:', mappedData);
@@ -197,24 +233,51 @@ const ClientProfile = () => {
           }
           
           if (response.success) {
-            const { user, profile } = response.data;
+            // Handle different response structures from different endpoints
+            let user, profile;
+            
+            if (isOwnProfile || !userId) {
+              // getCurrentUserProfile response structure from /auth/me
+              user = response.data.user;
+              profile = response.data.profile;
+            } else {
+              // getUserProfile response structure from /profiles/:userId
+              if (response.data.user && response.data.profile) {
+                // New structure after backend update
+                user = response.data.user;
+                profile = response.data.profile;
+              } else {
+                // Legacy structure where response.data is the profile with populated user
+                profile = response.data;
+                user = profile.user;
+              }
+            }
+            
             if (!user) throw new Error('User data not found');
             
             const mappedData = {
+              // Basic user information
               name: `${user.firstName || ''} ${user.lastName || ''}`.trim() || 'User',
-              profession: user.userType === 'client' ? 'Client' : (profile?.preferences?.jobTypes?.join(', ') || "Professional"),
+              profession: user.userType === 'client' ? 'Client' : (profile?.preferences?.jobTypes?.join(', ') || profile?.skills?.map(skill => skill.name)?.join(', ') || "Professional"),
               location: user.address ? `${user.address.city || ''}, ${user.address.country || ''}`.replace(', ,', ',').trim().replace(/^,|,$/g, '') : "",
               phone: user.phone || "",
+              email: user.email || "",
               website: profile?.socialLinks?.website || "",
+              
+              // Images
               coverImage: user.coverPhoto || "https://images.pexels.com/photos/3184339/pexels-photo-3184339.jpeg?auto=compress&cs=tinysrgb&w=800&h=300&fit=crop",
               profileImage: user.profilePicture || "https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=200&h=200&fit=crop",
+              
+              // Stats
               followers: 0,
               following: 0,
               posts: 0,
               rating: profile?.ratings?.average || 0,
               completedJobs: user.userType === 'client' ? (profile?.completedJobs || 0) : 0,
+              
+              // Profile details
               bio: profile?.bio || "",
-              skills: profile?.skills?.map(skill => skill.name) || [],
+              skills: profile?.skills?.map(skill => skill.name || skill) || [],
               experience: profile?.experience?.map(exp => ({
                 title: exp.title,
                 company: exp.company || "",
@@ -223,7 +286,17 @@ const ClientProfile = () => {
                   `${new Date(exp.startDate).getFullYear()} - ${new Date(exp.endDate).getFullYear()}`,
                 description: exp.description || ""
               })) || [],
-              portfolio: profile?.portfolio?.map(item => item.images?.[0] || "").filter(img => img) || []
+              portfolio: profile?.portfolio?.map(item => item.images?.[0] || "").filter(img => img) || [],
+              
+              // Include raw user and profile data for components that need it
+              user: user,
+              profile: profile,
+              
+              // Additional metadata
+              userType: user.userType,
+              isVerified: user.isVerified || false,
+              joinDate: user.createdAt,
+              availability: profile?.availability?.status || 'available'
             };
             
             setProfileData(mappedData);

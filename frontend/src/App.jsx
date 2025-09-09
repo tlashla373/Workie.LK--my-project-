@@ -63,6 +63,10 @@ const App = () => {
           element: <ClientProfile />,
         },
         {
+          path: 'profile/:userId',
+          element: <ClientProfile />,
+        },
+        {
           path: 'edit-profile',
           element: <EditProfile />,
         },

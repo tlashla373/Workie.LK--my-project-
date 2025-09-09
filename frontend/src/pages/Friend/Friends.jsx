@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Search, Filter, UserPlus, Users, Grid3X3, List, Loader2, RefreshCw } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { useDarkMode } from '../../contexts/DarkModeContext';
+import { useAuth } from '../../hooks/useAuth';
 import FriendCard from '../../components/FriendCard';
 import AuthChecker from '../../components/AuthChecker';
 import useConnections from '../../hooks/useConnections';
@@ -8,6 +10,8 @@ import useDiscoverPeople from '../../hooks/useDiscoverPeople';
 
 const Friends = () => {
   const { isDarkMode } = useDarkMode();
+  const { user } = useAuth(); // Get current logged-in user
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [filterBy, setFilterBy] = useState('all');
   const [viewMode, setViewMode] = useState('grid');
@@ -49,7 +53,22 @@ const Friends = () => {
       friend.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       friend.profession.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesFilter = filterBy === 'all' || friend.category === filterBy;
-    return matchesSearch && matchesFilter;
+    
+    // Exclude the current logged-in user from both connections and discover pages
+    // Handle both id and _id field formats
+    const friendId = friend.id || friend._id;
+    const userId = user?.id || user?._id;
+    
+    // Also check name-based filtering as a fallback
+    const currentUserName = user ? `${user.firstName || ''} ${user.lastName || ''}`.trim() : '';
+    const friendName = friend.name;
+    const isNotCurrentUserById = friendId !== userId;
+    const isNotCurrentUserByName = !currentUserName || !friendName || 
+      currentUserName.toLowerCase() !== friendName.toLowerCase();
+    
+    const isNotCurrentUser = isNotCurrentUserById && isNotCurrentUserByName;
+    
+    return matchesSearch && matchesFilter && isNotCurrentUser;
   });
 
   const handleEmailClick = async (friend) => {
@@ -94,6 +113,18 @@ const Friends = () => {
       refetchConnections();
     } else {
       refetchPeople();
+    }
+  };
+
+  const handleViewProfileClick = (friend) => {
+    // Navigate to ClientProfile page with the user's ID
+    const userId = friend.id || friend._id || friend.userId;
+    
+    if (userId) {
+      navigate(`/profile/${userId}`);
+    } else {
+      console.error('User ID not found for profile:', friend);
+      alert('Unable to view profile: User ID not found');
     }
   };
 
@@ -268,6 +299,7 @@ const Friends = () => {
                     onEmailClick={handleEmailClick}
                     onCallClick={handleCallClick}
                     onConnectClick={showConnections ? undefined : () => handleConnectClick(friend)}
+                    onViewProfileClick={handleViewProfileClick}
                     isConnected={showConnections}
                     showConnectButton={!showConnections}
                   />
