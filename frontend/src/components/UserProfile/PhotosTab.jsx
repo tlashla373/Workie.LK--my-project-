@@ -5,8 +5,8 @@ import {
   Upload,
   Plus
 } from 'lucide-react';
-import { useDarkMode } from '../contexts/DarkModeContext';
-import profileService from '../services/profileService';
+import { useDarkMode } from '../../contexts/DarkModeContext';
+import profileService from '../../services/profileService';
 
 // Photos Tab Component
 const PhotosTab = ({ profileData, isDarkMode }) => {

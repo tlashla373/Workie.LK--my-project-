@@ -1,6 +1,6 @@
 import React from 'react';
 import { X, Mail, Phone, MapPin, Calendar, Star, Briefcase } from 'lucide-react';
-import { useDarkMode } from '../contexts/DarkModeContext';
+import { useDarkMode } from '../../contexts/DarkModeContext';
 
 const ProfileModal = ({ friend, isOpen, onClose }) => {
   const { isDarkMode } = useDarkMode();

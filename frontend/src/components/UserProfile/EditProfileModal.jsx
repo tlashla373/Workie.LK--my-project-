@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { X, Save, User, Mail, Phone, MapPin, Globe, Briefcase } from 'lucide-react';
-import profileService from '../services/profileService';
+import profileService from '../../services/profileService';
 
 const EditProfileModal = ({ isOpen, onClose, profileData, onSave, isDarkMode = false }) => {
   const [formData, setFormData] = useState({

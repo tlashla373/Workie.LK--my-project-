@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useDarkMode } from '../../contexts/DarkModeContext';
-import ProfileHeader from '../../components/ProfileHeader';
-import NavigationTabs from '../../components/NavigationTab';
-import ProfileAbout from '../../components/AboutTab';
-import ProfilePhotos from '../../components/ProfilePhotos';
-import ProfileTimeline from '../../components/TimelineTab';
-import ProfileFriends from '../../components/FriendsTab';
+import ProfileHeader from '../../components/UserProfile/ProfileHeader';
+import NavigationTabs from '../../components/UserProfile/NavigationTab';
+import ProfileAbout from '../../components/UserProfile/AboutTab';
+import ProfilePhotos from '../../components/UserProfile/ProfilePhotos';
+import ProfileTimeline from '../../components/UserProfile/TimelineTab';
+import ProfileFriends from '../../components/UserProfile/FriendsTab';
 import profileService from '../../services/profileService';
 
-const ClientProfile = () => {
+const Profile = () => {
   const { isDarkMode } = useDarkMode();
   const { userId } = useParams(); // Get userId from URL params
   const navigate = useNavigate();
@@ -75,11 +75,11 @@ const ClientProfile = () => {
         setLoading(true);
         setError(null); // Clear any previous errors
         
-        console.log('ClientProfile: Starting profile fetch...');
-        console.log('ClientProfile: Auth token exists:', !!localStorage.getItem('auth_token'));
-        console.log('ClientProfile: User data exists:', !!localStorage.getItem('auth_user'));
-        console.log('ClientProfile: Is own profile:', isOwnProfile);
-        console.log('ClientProfile: Target userId:', userId);
+        console.log('Profile: Starting profile fetch...');
+        console.log('Profile: Auth token exists:', !!localStorage.getItem('auth_token'));
+        console.log('Profile: User data exists:', !!localStorage.getItem('auth_user'));
+        console.log('Profile: Is own profile:', isOwnProfile);
+        console.log('Profile: Target userId:', userId);
         
         let response;
         
@@ -90,7 +90,7 @@ const ClientProfile = () => {
           response = await profileService.getUserProfile(userId);
         }
         
-        console.log('ClientProfile: Profile service response:', response);
+        console.log('Profile: Profile service response:', response);
         
         if (response.success) {
           // Handle different response structures from different endpoints
@@ -132,7 +132,7 @@ const ClientProfile = () => {
             website: profile?.socialLinks?.website || "",
             
             // Images
-            coverImage: user.coverPhoto || "https://images.pexels.com/photos/3184339/pexels-photo-3184339.jpeg?auto=compress&cs=tinysrgb&w=800&h=300&fit=crop",
+            coverImage: user.coverPhoto || "https://res.cloudinary.com/workielk/image/upload/v1757439643/65561496_9602752_ewn2nj.png",
             profileImage: user.profilePicture || "https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=200&h=200&fit=crop",
             
             // Stats
@@ -175,14 +175,14 @@ const ClientProfile = () => {
           console.log('Client Profile - Mapped data:', mappedData);
           setProfileData(mappedData);
         } else {
-          console.log('ClientProfile: Response not successful:', response);
+          console.log('Profile: Response not successful:', response);
           throw new Error(response.message || 'Failed to fetch profile data');
         }
       } catch (error) {
-        console.error('ClientProfile: Error fetching profile data:', error);
-        console.error('ClientProfile: Error name:', error.name);
-        console.error('ClientProfile: Error message:', error.message);
-        console.error('ClientProfile: Full error:', error);
+        console.error('Profile: Error fetching profile data:', error);
+        console.error('Profile: Error name:', error.name);
+        console.error('Profile: Error message:', error.message);
+        console.error('Profile: Full error:', error);
         
         // Show specific error message
         const errorMessage = error.message === 'User data not found' 
@@ -197,7 +197,7 @@ const ClientProfile = () => {
         
         // Auto-redirect to login if authentication failed
         if (error.message?.includes('401') || error.message?.includes('Invalid token') || error.message?.includes('Token expired') || error.message?.includes('authentication')) {
-          console.log('ClientProfile: Redirecting to login due to auth error');
+          console.log('Profile: Redirecting to login due to auth error');
           // Clear invalid tokens
           localStorage.removeItem('auth_token');
           localStorage.removeItem('auth_user');
@@ -265,7 +265,7 @@ const ClientProfile = () => {
               website: profile?.socialLinks?.website || "",
               
               // Images
-              coverImage: user.coverPhoto || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQEBNC5QQQqyu8DeKNhuhTzHJhEPOflFO5XUQ&s",
+              coverImage: user.coverPhoto || "https://res.cloudinary.com/workielk/image/upload/v1757439643/65561496_9602752_ewn2nj.png",
               profileImage: user.profilePicture || "https://static.vecteezy.com/system/resources/previews/009/292/244/non_2x/default-avatar-icon-of-social-media-user-vector.jpg",
               
               // Stats
@@ -479,4 +479,4 @@ const ClientProfile = () => {
   );
 };
 
-export default ClientProfile;
+export default Profile;
