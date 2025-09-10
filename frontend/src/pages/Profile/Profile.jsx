@@ -4,7 +4,7 @@ import { useDarkMode } from '../../contexts/DarkModeContext';
 import ProfileHeader from '../../components/UserProfile/ProfileHeader';
 import NavigationTabs from '../../components/UserProfile/NavigationTab';
 import ProfileAbout from '../../components/UserProfile/AboutTab';
-import ProfilePhotos from '../../components/UserProfile/ProfilePhotos';
+import ProfilePhotos from '../../components/UserProfile/PhotosTab';
 import ProfileTimeline from '../../components/UserProfile/TimelineTab';
 import ProfileFriends from '../../components/UserProfile/FriendsTab';
 import profileService from '../../services/profileService';
@@ -519,7 +519,15 @@ const Profile = () => {
           />
         );
       case 'photos':
-        return <ProfilePhotos photos={profileData.portfolio} isDarkMode={isDarkMode} isOwnProfile={isOwnProfile} />;
+        return (
+          <ProfilePhotos 
+            photos={profileData.portfolio} 
+            isDarkMode={isDarkMode} 
+            isOwnProfile={isOwnProfile}
+            userId={userId || currentUserId}
+            profileData={profileData}
+          />
+        );
       case 'timeline':
         return <ProfileTimeline isDarkMode={isDarkMode} isOwnProfile={isOwnProfile} />;
       case 'friends':
