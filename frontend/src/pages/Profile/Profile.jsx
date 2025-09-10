@@ -75,11 +75,11 @@ const Profile = () => {
         setLoading(true);
         setError(null); // Clear any previous errors
         
-        console.log('Profile: Starting profile fetch...');
-        console.log('Profile: Auth token exists:', !!localStorage.getItem('auth_token'));
-        console.log('Profile: User data exists:', !!localStorage.getItem('auth_user'));
-        console.log('Profile: Is own profile:', isOwnProfile);
-        console.log('Profile: Target userId:', userId);
+        console.log('ClientProfile: Starting profile fetch...');
+        console.log('ClientProfile: Auth token exists:', !!localStorage.getItem('auth_token'));
+        console.log('ClientProfile: User data exists:', !!localStorage.getItem('auth_user'));
+        console.log('ClientProfile: Is own profile:', isOwnProfile);
+        console.log('ClientProfile: Target userId:', userId);
         
         let response;
         
@@ -90,7 +90,7 @@ const Profile = () => {
           response = await profileService.getUserProfile(userId);
         }
         
-        console.log('Profile: Profile service response:', response);
+        console.log('ClientProfile: Profile service response:', response);
         
         if (response.success) {
           // Handle different response structures from different endpoints
@@ -115,6 +115,11 @@ const Profile = () => {
           
           console.log('Client Profile - User data:', user);
           console.log('Client Profile - Profile data:', profile);
+          console.log('Client Profile - User address:', user?.address);
+          console.log('Client Profile - Profile location fields:', {
+            country: profile?.country,
+            city: profile?.city
+          });
           
           // Validate that user data exists
           if (!user) {
@@ -126,7 +131,48 @@ const Profile = () => {
             // Basic user information
             name: `${user.firstName || ''} ${user.lastName || ''}`.trim() || 'User',
             profession: user.userType === 'client' ? 'Client' : (profile?.preferences?.jobTypes?.join(', ') || profile?.skills?.map(skill => skill.name)?.join(', ') || "Professional"),
-            location: user.address ? `${user.address.city || ''}, ${user.address.country || ''}`.replace(', ,', ',').trim().replace(/^,|,$/g, '') : "",
+            location: (() => {
+              console.log('Location mapping - user.address:', user?.address);
+              console.log('Location mapping - profile location:', { country: profile?.country, city: profile?.city });
+              
+              // Try to get location from profile first (country, city)
+              if (profile?.country && profile?.city) {
+                console.log('Using profile location: country + city');
+                return `${profile.country}, ${profile.city}`;
+              }
+              
+              // Try to get location from user address (country, city)
+              if (user?.address?.country && user?.address?.city) {
+                console.log('Using user address location: country + city');
+                return `${user.address.country}, ${user.address.city}`;
+              }
+              
+              // Try to get location from profile country only
+              if (profile?.country) {
+                console.log('Using profile country only');
+                return profile.country;
+              }
+              
+              // Try to get location from user address country only
+              if (user?.address?.country) {
+                console.log('Using user address country only');
+                return user.address.country;
+              }
+              
+              // Try city from either source
+              if (profile?.city) {
+                console.log('Using profile city only');
+                return profile.city;
+              }
+              
+              if (user?.address?.city) {
+                console.log('Using user address city only');
+                return user.address.city;
+              }
+              
+              console.log('No location found, returning Not specified');
+              return "Not specified";
+            })(),
             phone: user.phone || "",
             email: user.email || "",
             website: profile?.socialLinks?.website || "",
@@ -175,14 +221,14 @@ const Profile = () => {
           console.log('Client Profile - Mapped data:', mappedData);
           setProfileData(mappedData);
         } else {
-          console.log('Profile: Response not successful:', response);
+          console.log('ClientProfile: Response not successful:', response);
           throw new Error(response.message || 'Failed to fetch profile data');
         }
       } catch (error) {
-        console.error('Profile: Error fetching profile data:', error);
-        console.error('Profile: Error name:', error.name);
-        console.error('Profile: Error message:', error.message);
-        console.error('Profile: Full error:', error);
+        console.error('ClientProfile: Error fetching profile data:', error);
+        console.error('ClientProfile: Error name:', error.name);
+        console.error('ClientProfile: Error message:', error.message);
+        console.error('ClientProfile: Full error:', error);
         
         // Show specific error message
         const errorMessage = error.message === 'User data not found' 
@@ -197,7 +243,7 @@ const Profile = () => {
         
         // Auto-redirect to login if authentication failed
         if (error.message?.includes('401') || error.message?.includes('Invalid token') || error.message?.includes('Token expired') || error.message?.includes('authentication')) {
-          console.log('Profile: Redirecting to login due to auth error');
+          console.log('ClientProfile: Redirecting to login due to auth error');
           // Clear invalid tokens
           localStorage.removeItem('auth_token');
           localStorage.removeItem('auth_user');
@@ -259,7 +305,48 @@ const Profile = () => {
               // Basic user information
               name: `${user.firstName || ''} ${user.lastName || ''}`.trim() || 'User',
               profession: user.userType === 'client' ? 'Client' : (profile?.preferences?.jobTypes?.join(', ') || profile?.skills?.map(skill => skill.name)?.join(', ') || "Professional"),
-              location: user.address ? `${user.address.city || ''}, ${user.address.country || ''}`.replace(', ,', ',').trim().replace(/^,|,$/g, '') : "",
+              location: (() => {
+                console.log('Retry - Location mapping - user.address:', user?.address);
+                console.log('Retry - Location mapping - profile location:', { country: profile?.country, city: profile?.city });
+                
+                // Try to get location from profile first (country, city)
+                if (profile?.country && profile?.city) {
+                  console.log('Retry - Using profile location: country + city');
+                  return `${profile.country}, ${profile.city}`;
+                }
+                
+                // Try to get location from user address (country, city)
+                if (user?.address?.country && user?.address?.city) {
+                  console.log('Retry - Using user address location: country + city');
+                  return `${user.address.country}, ${user.address.city}`;
+                }
+                
+                // Try to get location from profile country only
+                if (profile?.country) {
+                  console.log('Retry - Using profile country only');
+                  return profile.country;
+                }
+                
+                // Try to get location from user address country only
+                if (user?.address?.country) {
+                  console.log('Retry - Using user address country only');
+                  return user.address.country;
+                }
+                
+                // Try city from either source
+                if (profile?.city) {
+                  console.log('Retry - Using profile city only');
+                  return profile.city;
+                }
+                
+                if (user?.address?.city) {
+                  console.log('Retry - Using user address city only');
+                  return user.address.city;
+                }
+                
+                console.log('Retry - No location found, returning Not specified');
+                return "Not specified";
+              })(),
               phone: user.phone || "",
               email: user.email || "",
               website: profile?.socialLinks?.website || "",
