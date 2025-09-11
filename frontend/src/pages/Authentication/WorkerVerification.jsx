@@ -100,7 +100,7 @@ const WorkerVerification = () => {
         throw new Error('You must be logged in to submit verification data');
       }
 
-      // Prepare data as JSON (no file uploads for now)
+
       const verificationData = {
         categories: JSON.stringify(workerData.categories),
         skills: workerData.skills,
@@ -116,7 +116,11 @@ const WorkerVerification = () => {
         location: workerData.location,
         address: workerData.address,
         companyName: workerData.companyName,
-        phone: workerData.phone
+        phone: workerData.phone,
+        // Include uploaded file URLs
+        profilePhotoUrl: workerData.profilePhotoUrl,
+        idPhotoFrontUrl: workerData.idPhotoFrontUrl,
+        idPhotoBackUrl: workerData.idPhotoBackUrl
       };
 
       console.log('Submitting verification data:', verificationData);
@@ -808,6 +812,7 @@ const WorkerVerification = () => {
                         ...prev,
                         idPhotoFront: files[0],
                         idPhotoFrontUrl: result?.files?.idPhotoFront?.url
+
                       }));
                     }}
                     onFileRemove={() => {
@@ -865,15 +870,18 @@ const WorkerVerification = () => {
 
                   <FileUpload
                     uploadType="verification"
+                    verificationDocType="idPhotoBack"
                     maxFiles={1}
                     maxSizeInMB={10}
                     acceptedTypes={['image/jpeg', 'image/png']}
                     onFileUpload={(result, files) => {
                       console.log('ID back uploaded:', result);
+                      console.log('Result structure:', result);
+                      // The backend returns { files: { idPhotoBack: { url, publicId } } }
                       setWorkerData(prev => ({
                         ...prev,
                         idPhotoBack: files[0],
-                        idPhotoBackUrl: result?.files?.idPhotoBack?.url
+                        idPhotoBackUrl: result?.files?.idPhotoBack?.url || result?.url
                       }));
                     }}
                     onFileRemove={() => {
