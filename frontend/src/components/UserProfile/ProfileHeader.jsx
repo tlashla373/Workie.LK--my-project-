@@ -147,7 +147,7 @@ const ProfileHeader = ({
         </div>
         <div className="text-white mb-0 sm:mb-4">
           <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold">{profileData.name}</h1>
-          <p className="text-sm sm:text-base lg:text-lg opacity-90">{profileData.profession}</p>
+          <p className="text-sm sm:text-base lg:text-lg opacity-90">{profileData.title}</p>
           <div className="flex flex-wrap items-center gap-2 sm:gap-4 mt-1 sm:mt-2 text-xs sm:text-sm opacity-80">
             <span>{profileData.followers} followers</span>
             <span>{profileData.following} following</span>

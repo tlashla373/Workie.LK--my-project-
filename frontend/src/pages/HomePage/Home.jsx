@@ -11,12 +11,7 @@ import Mason from '../../assets/mason.svg'
 import Cleaner from '../../assets/cleaner.svg'
 import Mechanic from '../../assets/Mechanic.svg'
 
-
-
 export default function MainFeed() {
-  // Default avatar fallback
-  const DEFAULT_AVATAR = 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face';
-  
   const [selectedPost, setSelectedPost] = useState(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [newComment, setNewComment] = useState('');
@@ -36,13 +31,13 @@ export default function MainFeed() {
     const fetchPosts = async () => {
       try {
         setLoading(true);
-        console.log('📖 Fetching feed posts from database...');
+        console.log('Fetching feed posts from database...');
         
         const response = await postService.getFeedPosts(1, 20); // Get first 20 posts
         
         if (response.success && response.data) {
           const fetchedPosts = response.data.posts || response.data || [];
-          console.log('✅ Posts fetched successfully:', fetchedPosts.length);
+          console.log('Posts fetched successfully:', fetchedPosts.length);
           
           // Transform database posts to match UI format
           const transformedPosts = fetchedPosts.map(post => ({
@@ -73,17 +68,17 @@ export default function MainFeed() {
               }
             });
             setLikedPosts(userLikedPostIds);
-            console.log('👍 User liked posts loaded:', userLikedPostIds.size);
+            console.log('User liked posts loaded:', userLikedPostIds.size);
           }
           
           setPosts(transformedPosts);
           setHasMore(response.data.hasMore || false);
         } else {
-          console.warn('⚠️ No posts data received');
+          console.warn('No posts data received');
           setPosts([]);
         }
       } catch (error) {
-        console.error('❌ Error fetching posts:', error);
+        console.error('Error fetching posts:', error);
         setError('Failed to load posts. Please try again.');
       } finally {
         setLoading(false);

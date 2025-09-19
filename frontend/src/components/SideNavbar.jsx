@@ -340,14 +340,14 @@ const SideNavbar = ({
           <div className={`p-4 border-b-2 ${isDarkMode ? 'border-gray-700' : 'border-white'}`}>
             <Link to={userType === 'client' ? '/clientprofile' : '/workerprofile'}>
               <button
-                className={`w-full flex items-center space-x-3 p-3 rounded-xl transition-all duration-200 cursor-pointer ${isDarkMode ? 'bg-gray-700/50 hover:bg-gray-700' : 'bg-gray-200/30 hover:bg-gray-700/50'}`}
+                className={`w-full flex items-center space-x-3 p-2 rounded-xl transition-all duration-200 cursor-pointer ${isDarkMode ? 'bg-gray-700/50 hover:bg-gray-700' : 'bg-gray-200/30 hover:bg-gray-700/50'}`}
               >
                 <div className="relative">
                   {loading ? (
-                    <div className="w-10 h-10 rounded-full bg-gray-300 animate-pulse"></div>
+                    <div className="w-8 h-8 rounded-full bg-gray-300 animate-pulse"></div>
                   ) : (
                     <img
-                      className="w-10 h-10 rounded-full object-cover ring-2 ring-gray-100"
+                      className="w-8 h-8 rounded-full object-cover ring-2 ring-gray-100"
                       src={displayProfileImage}
                       alt="Profile"
                       onError={(e) => {

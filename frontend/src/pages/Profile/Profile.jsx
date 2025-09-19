@@ -25,6 +25,7 @@ const Profile = () => {
   const [profileData, setProfileData] = useState({
     name: "",
     profession: "",
+    title: "",
     location: "",
     phone: "",
     website: "",
@@ -190,6 +191,7 @@ const Profile = () => {
             
             // Profile details
             bio: profile?.bio || "",
+            title: profile?.title || "",
             skills: profile?.skills?.map(skill => skill.name || skill) || [],
             experience: profile?.experience?.map(exp => ({
               title: exp.title,
@@ -364,6 +366,7 @@ const Profile = () => {
               
               // Profile details
               bio: profile?.bio || "",
+              title: profile?.title || "",
               skills: profile?.skills?.map(skill => skill.name || skill) || [],
               experience: profile?.experience?.map(exp => ({
                 title: exp.title,
