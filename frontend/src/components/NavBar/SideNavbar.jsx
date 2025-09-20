@@ -15,16 +15,16 @@ import {
   Menu,
   X
 } from 'lucide-react';
-import profileImage from '../assets/profile.jpeg';
-import Logo from '../assets/Logo.png'
+import profileImage from '../../assets/profile.jpeg';
+import Logo from '../../assets/Logo.png'
 import { NavLink, useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
-import { useDarkMode } from '../contexts/DarkModeContext';
-import profileService from '../services/profileService';
-import connectionService from '../services/connectionService';
-import { useAuth } from '../hooks/useAuth';
-import { useApiError } from '../hooks/useApiError';
-import NetworkStatusIndicator from './NetworkStatusIndicator';
+import { useDarkMode } from '../../contexts/DarkModeContext';
+import profileService from '../../services/profileService';
+import connectionService from '../../services/connectionService';
+import { useAuth } from '../../hooks/useAuth';
+import { useApiError } from '../../hooks/useApiError';
+import NetworkStatusIndicator from '../NetworkStatusIndicator';
 
 
 const SideNavbar = ({ 

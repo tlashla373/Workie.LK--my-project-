@@ -180,7 +180,7 @@ const Profile = () => {
             
             // Images
             coverImage: user.coverPhoto || "https://res.cloudinary.com/workielk/image/upload/v1757439643/65561496_9602752_ewn2nj.png",
-            profileImage: user.profilePicture || "https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=200&h=200&fit=crop",
+            profileImage: user.profilePicture || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR4g_2Qj3LsNR-iqUAFm6ut2EQVcaou4u2YXw&s",
             
             // Stats
             followers: 0, // Not implemented yet
