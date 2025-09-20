@@ -24,7 +24,6 @@ import { useAuth } from '../../hooks/useAuth';
 import profileService from '../../services/profileService';
 import notificationService from '../../services/notificationService';
 import Search from './Search';
-import ErrorBoundary from '../ErrorBoundary';
 
 const UpperNavbar = ({ isCollapsed = false }) => {
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
