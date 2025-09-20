@@ -569,7 +569,7 @@ const Profile = () => {
           onEditProfile={handleEditProfile}
         />
         
-        <div className="p-4 sm:p-6">
+        <div className="p-4 sm:p-4">
           {renderTabContent()}
         </div>
       </div>
