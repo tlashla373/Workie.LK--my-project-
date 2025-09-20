@@ -497,8 +497,18 @@ const UpperNavbar = ({ isCollapsed = false }) => {
                   <div className="relative">
                     <img
                       className="w-8 h-8 rounded-full object-cover ring-2 ring-gray-300"
-                      src={profileImage}
-                      alt="Profile"
+                      src={displayProfileImage}
+                        alt="Profile"
+                        onError={(e) => {
+                          // Try multiple fallback sources
+                          if (e.target.src !== profileImage) {
+                          if (userData.profileImage && e.target.src === userData.profileImage) {
+                            e.target.src = user?.profileImage || user?.profilePicture || profileImage;
+                          } else {
+                            e.target.src = profileImage; // Final fallback
+                          }
+                        }
+                      }}
                     />
                     <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></div>
                   </div>
