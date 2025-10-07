@@ -24,9 +24,9 @@ import { useAuth } from '../../hooks/useAuth';
 import profileService from '../../services/profileService';
 import notificationService from '../../services/notificationService';
 import Search from './Search';
+import Notification from './Notification';
 
 const UpperNavbar = ({ isCollapsed = false }) => {
-  const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
   const [isNotificationDropdownOpen, setIsNotificationDropdownOpen] = useState(false);
   const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
   const [userData, setUserData] = useState({
@@ -68,7 +68,6 @@ const UpperNavbar = ({ isCollapsed = false }) => {
     }
   };
 
-  const toggleProfileDropdown = () => setIsProfileDropdownOpen(!isProfileDropdownOpen);
   const toggleNotificationDropdown = () => setIsNotificationDropdownOpen(!isNotificationDropdownOpen);
    const toggleMobileSearch = () => setIsMobileSearchOpen(!isMobileSearchOpen);
 
@@ -135,7 +134,7 @@ const UpperNavbar = ({ isCollapsed = false }) => {
           action: notification.title,
           content: notification.message,
           time: new Date(notification.createdAt).toLocaleString(),
-          unread: !notification.isRead,
+          unread: !notification.read && !notification.isRead, // Handle both field names
           avatar: notification.sender?.profilePicture || profileImage,
           icon: getNotificationTypeIcon(notification.type)
         }));
@@ -303,7 +302,7 @@ const UpperNavbar = ({ isCollapsed = false }) => {
                     userData.isActive ? 'bg-green-500' : 'bg-gray-400'
                   }`}></div>
                 </div>
-                {(!isCollapsed || isProfileDropdownOpen) && (
+                {!isCollapsed && (
                   <div className="flex-1 text-left">
                     {loading ? (
                       <div className="space-y-1">
@@ -329,103 +328,9 @@ const UpperNavbar = ({ isCollapsed = false }) => {
               <MessageCircle className="w-5 h-5" />
             </button>
             
-            {/* Notifications Button with Dropdown */}
-            <div className="relative">
-              <button 
-                onClick={toggleNotificationDropdown}
-                className={`relative p-2 rounded-xl transition-all duration-200 ${isDarkMode ? 'bg-gray-700/50 text-gray-100 hover:bg-gray-700 hover:text-white' : 'bg-gray-700/30 text-gray-100 hover:bg-gray-700/50 hover:text-white'} ${isNotificationDropdownOpen ? (isDarkMode ? 'bg-gray-700' : 'bg-gray-700/50') : ''}`}
-              >
-                <Bell className="w-5 h-5" />
-                {unreadCount > 0 && (
-                  <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] bg-red-500 text-white text-xs rounded-full flex items-center justify-center font-medium">
-                    {unreadCount > 9 ? '9+' : unreadCount}
-                  </span>
-                )}
-              </button>
-
-              {/* Desktop Notifications Dropdown */}
-              {isNotificationDropdownOpen && (
-                <div className={`absolute right-0 top-full mt-2 w-96 rounded-xl shadow-2xl border z-50 ${isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'}`}>
-                  {/* Header */}
-                  <div className={`px-4 py-3 border-b ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}>
-                    <div className="flex items-center justify-between">
-                      <h3 className={`text-lg font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-                        Notifications
-                      </h3>
-                      <button 
-                        onClick={handleMarkAllAsRead}
-                        className={`text-sm ${isDarkMode ? 'text-blue-400 hover:text-blue-300' : 'text-blue-600 hover:text-blue-700'} transition-colors`}
-                      >
-                        Mark all as read
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Notifications List */}
-                  <div className="max-h-96 overflow-y-auto no-scrollbar">
-                    {notifications.map((notification) => (
-                      <div
-                        key={notification.id}
-                        onClick={() => handleNotificationClick(notification.id)}
-                        className={`px-4 py-3 hover:bg-opacity-50 transition-colors cursor-pointer border-l-4 ${
-                          notification.unread 
-                            ? (isDarkMode ? 'bg-gray-700/30 border-blue-500 hover:bg-gray-700/50' : 'bg-blue-50 border-blue-500 hover:bg-blue-100') 
-                            : (isDarkMode ? 'border-transparent hover:bg-gray-700/30' : 'border-transparent hover:bg-gray-50')
-                        }`}
-                      >
-                        <div className="flex items-start space-x-3">
-                          {/* Avatar with Icon Badge */}
-                          <div className="relative flex-shrink-0">
-                            <img
-                              src={notification.avatar}
-                              alt={notification.user}
-                              className="w-10 h-10 rounded-full object-cover"
-                            />
-                            <div className={`absolute -bottom-1 -right-1 w-6 h-6 rounded-full flex items-center justify-center ${isDarkMode ? 'bg-gray-800' : 'bg-white'} ring-2 ${isDarkMode ? 'ring-gray-800' : 'ring-white'}`}>
-                              {getNotificationIcon(notification.type)}
-                            </div>
-                          </div>
-
-                          {/* Content */}
-                          <div className="flex-1 min-w-0">
-                            <div className={`text-sm ${isDarkMode ? 'text-gray-200' : 'text-gray-900'}`}>
-                              <span className="font-semibold">{notification.user}</span>
-                              <span className="ml-1">{notification.action}</span>
-                            </div>
-                            {notification.content && (
-                              <p className={`text-sm mt-1 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-                                {notification.content}
-                              </p>
-                            )}
-                            <p className={`text-xs mt-1 ${isDarkMode ? 'text-gray-500' : 'text-gray-500'}`}>
-                              {notification.time}
-                            </p>
-                          </div>
-
-                          {/* Unread Indicator */}
-                          {notification.unread && (
-                            <div className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0 mt-2"></div>
-                          )}
-
-                          {/* More Options */}
-                          <button className={`p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity ${isDarkMode ? 'hover:bg-gray-700 text-gray-400' : 'hover:bg-gray-100 text-gray-500'}`}>
-                            <MoreHorizontal className="w-4 h-4" />
-                          </button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* Footer */}
-                  <div className={`px-4 py-3 border-t text-center ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}>
-                    <button className={`text-sm font-medium ${isDarkMode ? 'text-blue-400 hover:text-blue-300' : 'text-blue-600 hover:text-blue-700'} transition-colors`}>
-                      See all notifications
-                    </button>
-                  </div>
-                </div>
-              )}
+            {/* New Real-time Notification Component */}
+            <Notification />
             </div>
-          </div>
           )}
         </div>
       </header>
@@ -541,7 +446,7 @@ const UpperNavbar = ({ isCollapsed = false }) => {
             </div>
 
             {/* Notifications List */}
-            <div className="flex-1 overflow-y-auto">
+            <div className="flex-1 overflow-y-auto no-scrollbar">
               {notifications.map((notification) => (
                 <div
                   key={notification.id}
@@ -600,11 +505,10 @@ const UpperNavbar = ({ isCollapsed = false }) => {
       )}
 
       {/* Overlay for dropdowns */}
-      {(isProfileDropdownOpen || isNotificationDropdownOpen) && (
+      {isNotificationDropdownOpen && (
         <div
           className="fixed inset-0 z-40 bg-black/20 backdrop-blur-sm"
           onClick={() => {
-            setIsProfileDropdownOpen(false);
             setIsNotificationDropdownOpen(false);
           }}
         />

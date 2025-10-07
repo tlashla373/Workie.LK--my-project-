@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useDarkMode } from '../../contexts/DarkModeContext';
 import { useAuth } from '../../hooks/useAuth';
 import FriendCard from '../../components/FriendCard';
-import AuthChecker from '../../components/AuthChecker';
+import AuthChecker from '../../components/ProtectionPage/AuthChecker';
 import useConnections from '../../hooks/useConnections';
 import useDiscoverPeople from '../../hooks/useDiscoverPeople';
 
@@ -136,7 +136,7 @@ const Friends = () => {
     { value: 'welder', label: 'Welders' },
     { value: 'mason', label: 'Masons' },
     { value: 'electrician', label: 'Electricians' },
-    { value: 'general', label: 'General Workers' },
+    { value: 'worker', label: 'Workers' },
     { value: 'client', label: 'Clients' }
   ];
 
